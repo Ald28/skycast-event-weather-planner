@@ -22,17 +22,23 @@ export function LocationSearch({ onSearch }: LocationSearchProps) {
 
   const eventTypes = [
     "Desfile", "Concierto", "Boda", "Festival", "Caminata", 
-    "Picnic", "Evento Deportivo", "Feria", "Graduación"
+    "Picnic", "Evento Deportivo", "Feria", "Graduación",
+    "Fotografía", "Camping", "Fiesta", "Carrera", "Regata"
   ];
 
   return (
     <Card className="p-6 backdrop-blur-sm bg-white/20 border-white/30">
       <div className="space-y-4">
         <div className="text-center space-y-2">
-          <h2 className="text-2xl font-bold">Planifica tu Evento</h2>
+          <h2 className="text-2xl font-bold">Planifica tu Evento al Aire Libre</h2>
           <p className="text-muted-foreground">
-            Consulta las condiciones meteorológicas para tu evento especial
+            Análisis meteorológico inteligente con IA para cualquier actividad outdoor
           </p>
+          <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground pt-2">
+            <span className="bg-primary/10 px-2 py-1 rounded">📊 Gráficos Interactivos</span>
+            <span className="bg-primary/10 px-2 py-1 rounded">💾 Exportación CSV/JSON</span>
+            <span className="bg-primary/10 px-2 py-1 rounded">🤖 Asistente IA</span>
+          </div>
         </div>
 
         <div className="space-y-4">
