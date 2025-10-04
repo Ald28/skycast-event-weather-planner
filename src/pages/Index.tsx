@@ -64,7 +64,7 @@ const Index = () => {
                 Sky<span className="text-primary">Cast</span>
               </h1>
               <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto">
-                Predicción meteorológica inteligente con IA para todo tipo de eventos y actividades al aire libre
+                Predicción meteorológica inteligente para eventos al aire libre
               </p>
             </div>
             

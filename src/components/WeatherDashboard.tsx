@@ -1,10 +1,7 @@
 import { WeatherCard } from "./WeatherCard";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { MapPin, Calendar, Clock, TrendingUp, Download, BarChart3 } from "lucide-react";
-import { WeatherChart } from "./WeatherChart";
-import { toast } from "@/hooks/use-toast";
+import { MapPin, Calendar, Clock, TrendingUp } from "lucide-react";
 
 interface WeatherDashboardProps {
   location: string;
@@ -56,85 +53,15 @@ export function WeatherDashboard({ location, eventType, date }: WeatherDashboard
 
   const riskLevel = getRiskLevel(overallRisk);
 
-  const exportToCSV = () => {
-    const headers = ["Condición", "Probabilidad (%)", "Descripción", "Temperatura"];
-    const rows = weatherConditions.map(w => [
-      w.condition,
-      w.probability,
-      w.description,
-      w.temperature || "N/A"
-    ]);
-    
-    const csv = [
-      headers.join(","),
-      ...rows.map(row => row.join(","))
-    ].join("\n");
-    
-    const blob = new Blob([csv], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `skycast-${location}-${date}.csv`;
-    link.click();
-    
-    toast({
-      title: "Datos exportados",
-      description: "Los datos se han descargado exitosamente",
-    });
-  };
-
-  const exportToJSON = () => {
-    const data = {
-      location,
-      eventType,
-      date,
-      conditions: weatherConditions,
-      overallRisk,
-      riskLevel: riskLevel.label,
-      metadata: {
-        exportDate: new Date().toISOString(),
-        source: "SkyCast Weather Analysis",
-        units: {
-          temperature: "Celsius",
-          wind: "km/h",
-          humidity: "percentage"
-        }
-      }
-    };
-    
-    const json = JSON.stringify(data, null, 2);
-    const blob = new Blob([json], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `skycast-${location}-${date}.json`;
-    link.click();
-    
-    toast({
-      title: "Datos exportados",
-      description: "Los datos se han descargado en formato JSON",
-    });
-  };
-
   return (
     <div className="space-y-6 animate-fade-in">
       <Card className="p-6 backdrop-blur-sm bg-white/20 border-white/30">
         <div className="space-y-4">
-          <div className="flex items-center justify-between flex-wrap gap-4">
+          <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold">Análisis Meteorológico</h2>
-            <div className="flex items-center gap-2">
-              <Badge className={`${riskLevel.color} text-white`}>
-                Riesgo {riskLevel.label}
-              </Badge>
-              <Button variant="outline" size="sm" onClick={exportToCSV}>
-                <Download className="w-4 h-4 mr-2" />
-                CSV
-              </Button>
-              <Button variant="outline" size="sm" onClick={exportToJSON}>
-                <Download className="w-4 h-4 mr-2" />
-                JSON
-              </Button>
-            </div>
+            <Badge className={`${riskLevel.color} text-white`}>
+              Riesgo {riskLevel.label}
+            </Badge>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
@@ -170,16 +97,6 @@ export function WeatherDashboard({ location, eventType, date }: WeatherDashboard
           </div>
         ))}
       </div>
-
-      <Card className="p-6 backdrop-blur-sm bg-white/20 border-white/30">
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold flex items-center gap-2">
-            <BarChart3 className="w-5 h-5" />
-            Análisis Gráfico de Probabilidades
-          </h3>
-          <WeatherChart conditions={weatherConditions} />
-        </div>
-      </Card>
 
       <Card className="p-6 backdrop-blur-sm bg-white/20 border-white/30">
         <div className="space-y-4">
