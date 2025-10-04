@@ -2,10 +2,11 @@ import { useState } from "react";
 import { LocationSearch } from "@/components/LocationSearch";
 import { WeatherDashboard } from "@/components/WeatherDashboard";
 import { AIChat } from "@/components/AIChat";
-import { Button } from "@/components/ui/button";
+import { QueryHistory } from "@/components/QueryHistory";
+import { WeatherAlerts } from "@/components/WeatherAlerts";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Cloud, Sun, Wind, Droplets, Bot, BarChart3 } from "lucide-react";
+import { Cloud, Sun, Wind, Droplets, Bot, BarChart3, History, Bell } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import heroImage from "@/assets/hero-weather.jpg";
 
@@ -88,18 +89,26 @@ const Index = () => {
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-3 max-w-md mx-auto mb-8 bg-white/20 backdrop-blur-sm">
+          <TabsList className="grid w-full grid-cols-5 max-w-3xl mx-auto mb-8 bg-white/20 backdrop-blur-sm">
             <TabsTrigger value="search" className="flex items-center gap-2">
               <Cloud className="w-4 h-4" />
-              Buscar
+              <span className="hidden sm:inline">Buscar</span>
             </TabsTrigger>
             <TabsTrigger value="analysis" disabled={!searchData} className="flex items-center gap-2">
               <BarChart3 className="w-4 h-4" />
-              Análisis
+              <span className="hidden sm:inline">Análisis</span>
             </TabsTrigger>
             <TabsTrigger value="assistant" className="flex items-center gap-2">
               <Bot className="w-4 h-4" />
-              Asistente
+              <span className="hidden sm:inline">Asistente</span>
+            </TabsTrigger>
+            <TabsTrigger value="history" className="flex items-center gap-2">
+              <History className="w-4 h-4" />
+              <span className="hidden sm:inline">Historial</span>
+            </TabsTrigger>
+            <TabsTrigger value="alerts" className="flex items-center gap-2">
+              <Bell className="w-4 h-4" />
+              <span className="hidden sm:inline">Alertas</span>
             </TabsTrigger>
           </TabsList>
 
@@ -145,6 +154,27 @@ const Index = () => {
           <TabsContent value="assistant" className="space-y-6">
             <div className="max-w-4xl mx-auto h-[600px]">
               <AIChat />
+            </div>
+          </TabsContent>
+
+          <TabsContent value="history" className="space-y-6">
+            <div className="max-w-4xl mx-auto">
+              <QueryHistory 
+                onLoadQuery={(location, eventType, date) => {
+                  setSearchData({ location, eventType, date });
+                  setActiveTab("analysis");
+                  toast({
+                    title: "Consulta cargada",
+                    description: `Se ha cargado la consulta para ${eventType} en ${location}`,
+                  });
+                }}
+              />
+            </div>
+          </TabsContent>
+
+          <TabsContent value="alerts" className="space-y-6">
+            <div className="max-w-4xl mx-auto">
+              <WeatherAlerts />
             </div>
           </TabsContent>
         </Tabs>

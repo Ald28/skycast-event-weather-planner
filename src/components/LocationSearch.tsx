@@ -22,7 +22,9 @@ export function LocationSearch({ onSearch }: LocationSearchProps) {
 
   const eventTypes = [
     "Desfile", "Concierto", "Boda", "Festival", "Caminata", 
-    "Picnic", "Evento Deportivo", "Feria", "Graduación"
+    "Picnic", "Evento Deportivo", "Feria", "Graduación",
+    "Camping", "Maratón", "Ciclismo", "Vacaciones", "Pesca",
+    "Fotografía", "BBQ", "Yoga", "Mercado"
   ];
 
   return (
@@ -31,7 +33,8 @@ export function LocationSearch({ onSearch }: LocationSearchProps) {
         <div className="text-center space-y-2">
           <h2 className="text-2xl font-bold">Planifica tu Evento</h2>
           <p className="text-muted-foreground">
-            Consulta las condiciones meteorológicas para tu evento especial
+            Análisis meteorológico avanzado para cualquier actividad al aire libre. 
+            Exporta datos, configura alertas y obtén recomendaciones inteligentes.
           </p>
         </div>
 
@@ -54,7 +57,7 @@ export function LocationSearch({ onSearch }: LocationSearchProps) {
               <Users className="w-4 h-4" />
               Tipo de Evento
             </label>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-3 gap-2 max-h-48 overflow-y-auto pr-2">
               {eventTypes.map((type) => (
                 <Button
                   key={type}

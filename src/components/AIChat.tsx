@@ -27,13 +27,60 @@ export function AIChat() {
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
 
-  const simulatedResponses = [
-    "Basándome en los datos históricos, hay una probabilidad del 25% de lluvia para esa fecha. Te recomiendo tener un plan B bajo techo.",
-    "Las condiciones para tu evento parecen favorables. La temperatura estará entre 22-26°C con vientos suaves.",
-    "Te sugiero considerar las horas de la tarde para tu evento, ya que las mañanas pueden tener mayor humedad.",
-    "Para eventos al aire libre, es importante considerar el índice UV. ¿Necesitas recomendaciones sobre protección solar?",
-    "Los patrones meteorológicos indican condiciones estables para esa semana. ¿Quieres que revise fechas alternativas?"
-  ];
+  const intelligentResponses = {
+    general: [
+      "¡Hola! Puedo ayudarte a planificar tu evento analizando las condiciones meteorológicas. ¿Qué tipo de evento estás planeando?",
+      "Los datos meteorológicos históricos son muy útiles para planificar eventos. ¿Tienes ya una fecha y ubicación en mente?",
+    ],
+    location: [
+      "Excelente elección de ubicación. ¿Qué tipo de evento planeas realizar allí?",
+      "He analizado las condiciones típicas para esa zona. ¿Cuándo planeas tu evento?",
+    ],
+    weather: [
+      "Basándome en los datos históricos, hay una probabilidad del 25% de lluvia para esa fecha. Te recomiendo tener un plan B bajo techo.",
+      "Las condiciones para tu evento parecen favorables. La temperatura estará entre 22-26°C con vientos suaves.",
+      "Para eventos al aire libre, te sugiero considerar las horas de la tarde, ya que las mañanas pueden tener mayor humedad.",
+    ],
+    recommendations: [
+      "Para tu tipo de evento, te recomiendo prestar especial atención a: temperatura, viento y humedad.",
+      "Basándome en tu consulta, aquí están mis recomendaciones: 1) Tener refugio disponible 2) Planificar hidratación 3) Considerar protección solar",
+      "Los patrones meteorológicos indican condiciones estables. ¿Quieres que analice fechas alternativas?",
+    ],
+    features: [
+      "¿Sabías que puedes exportar todos los datos en formato CSV o JSON? Solo presiona los botones de exportación en la sección de análisis.",
+      "Puedes ver gráficos interactivos de las condiciones climáticas. ¡Explora las diferentes visualizaciones en la pestaña de gráficos!",
+      "Configura alertas personalizadas para recibir notificaciones si las condiciones superan ciertos umbrales.",
+    ],
+    alerts: [
+      "Recuerda configurar alertas para condiciones críticas como vientos fuertes o temperaturas extremas.",
+      "Las alertas te ayudarán a estar preparado. ¿Quieres que te ayude a configurar una alerta personalizada?",
+    ],
+  };
+
+  const getContextualResponse = (input: string): string => {
+    const lowerInput = input.toLowerCase();
+    
+    if (lowerInput.includes("ubicación") || lowerInput.includes("lugar") || lowerInput.includes("dónde")) {
+      return intelligentResponses.location[Math.floor(Math.random() * intelligentResponses.location.length)];
+    }
+    if (lowerInput.includes("clima") || lowerInput.includes("temperatura") || lowerInput.includes("lluvia")) {
+      return intelligentResponses.weather[Math.floor(Math.random() * intelligentResponses.weather.length)];
+    }
+    if (lowerInput.includes("recomend") || lowerInput.includes("suger") || lowerInput.includes("consejo")) {
+      return intelligentResponses.recommendations[Math.floor(Math.random() * intelligentResponses.recommendations.length)];
+    }
+    if (lowerInput.includes("export") || lowerInput.includes("descargar") || lowerInput.includes("guardar")) {
+      return intelligentResponses.features[0];
+    }
+    if (lowerInput.includes("gráfico") || lowerInput.includes("visual") || lowerInput.includes("chart")) {
+      return intelligentResponses.features[1];
+    }
+    if (lowerInput.includes("alerta") || lowerInput.includes("notifica")) {
+      return intelligentResponses.alerts[Math.floor(Math.random() * intelligentResponses.alerts.length)];
+    }
+    
+    return intelligentResponses.general[Math.floor(Math.random() * intelligentResponses.general.length)];
+  };
 
   const handleSendMessage = () => {
     if (!input.trim()) return;
@@ -49,11 +96,11 @@ export function AIChat() {
     setInput("");
     setIsTyping(true);
 
-    // Simulate AI response
+    // Simulate intelligent AI response
     setTimeout(() => {
       const aiResponse: Message = {
         id: (Date.now() + 1).toString(),
-        content: simulatedResponses[Math.floor(Math.random() * simulatedResponses.length)],
+        content: getContextualResponse(input),
         sender: "ai",
         timestamp: new Date()
       };

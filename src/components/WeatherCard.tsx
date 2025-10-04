@@ -1,5 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import { Cloud, Sun, Wind, Droplets, Thermometer, AlertTriangle } from "lucide-react";
 
@@ -71,10 +72,22 @@ export function WeatherCard({ condition, probability, description, temperature, 
           </Badge>
         </div>
         
-        <div className="space-y-1">
+        <div className="space-y-3">
           <p className="text-sm text-muted-foreground">{description}</p>
+          
+          <div className="space-y-2">
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-muted-foreground">Probabilidad</span>
+              <span className="font-semibold">{probability}%</span>
+            </div>
+            <Progress value={probability} className="h-2" />
+          </div>
+          
           {temperature && (
-            <p className="text-lg font-semibold">{temperature}</p>
+            <div className="flex items-center gap-2 text-lg font-semibold pt-1">
+              <Thermometer className="w-5 h-5" />
+              {temperature}
+            </div>
           )}
         </div>
       </div>

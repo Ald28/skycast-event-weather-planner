@@ -1,7 +1,10 @@
 import { WeatherCard } from "./WeatherCard";
+import { WeatherChart } from "./WeatherChart";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Calendar, Clock, TrendingUp } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { MapPin, Calendar, Clock, TrendingUp, Download, FileJson } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 
 interface WeatherDashboardProps {
   location: string;
@@ -10,7 +13,9 @@ interface WeatherDashboardProps {
 }
 
 export function WeatherDashboard({ location, eventType, date }: WeatherDashboardProps) {
-  // Simulated weather data
+  const { toast } = useToast();
+  
+  // Simulated weather data with more variables
   const weatherConditions = [
     {
       condition: "hot" as const,
@@ -44,6 +49,72 @@ export function WeatherDashboard({ location, eventType, date }: WeatherDashboard
     }
   ];
 
+  const additionalMetrics = [
+    { name: "Índice UV", value: "Moderado (6)", icon: "☀️" },
+    { name: "Visibilidad", value: "10 km", icon: "👁️" },
+    { name: "Presión", value: "1013 hPa", icon: "🌡️" },
+    { name: "Punto de Rocío", value: "14°C", icon: "💧" },
+  ];
+
+  const exportToCSV = () => {
+    const csvContent = [
+      ["Ubicación", location],
+      ["Tipo de Evento", eventType],
+      ["Fecha", new Date(date).toLocaleDateString('es-ES')],
+      ["Hora de Actualización", new Date().toLocaleString('es-ES')],
+      [""],
+      ["Condición", "Probabilidad (%)", "Descripción", "Temperatura"],
+      ...weatherConditions.map(c => [
+        c.condition,
+        c.probability.toString(),
+        c.description,
+        c.temperature || "N/A"
+      ])
+    ].map(row => row.join(",")).join("\n");
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `skycast-${location}-${date}.csv`;
+    link.click();
+    
+    toast({
+      title: "Datos exportados",
+      description: "El archivo CSV se ha descargado correctamente",
+    });
+  };
+
+  const exportToJSON = () => {
+    const jsonData = {
+      metadata: {
+        location,
+        eventType,
+        date,
+        timestamp: new Date().toISOString(),
+        source: "SkyCast Weather Analysis",
+      },
+      weatherConditions: weatherConditions.map(c => ({
+        condition: c.condition,
+        probability: c.probability,
+        description: c.description,
+        temperature: c.temperature || null,
+        unit: c.temperature ? "°C" : null
+      })),
+      additionalMetrics
+    };
+
+    const blob = new Blob([JSON.stringify(jsonData, null, 2)], { type: 'application/json' });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `skycast-${location}-${date}.json`;
+    link.click();
+    
+    toast({
+      title: "Datos exportados",
+      description: "El archivo JSON se ha descargado correctamente",
+    });
+  };
+
   const overallRisk = Math.max(...weatherConditions.map(c => c.probability));
   const getRiskLevel = (risk: number) => {
     if (risk >= 70) return { label: "Alto", color: "bg-destructive" };
@@ -57,11 +128,33 @@ export function WeatherDashboard({ location, eventType, date }: WeatherDashboard
     <div className="space-y-6 animate-fade-in">
       <Card className="p-6 backdrop-blur-sm bg-white/20 border-white/30">
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold">Análisis Meteorológico</h2>
-            <Badge className={`${riskLevel.color} text-white`}>
-              Riesgo {riskLevel.label}
-            </Badge>
+          <div className="flex items-center justify-between flex-wrap gap-3">
+            <div className="flex items-center gap-3">
+              <h2 className="text-2xl font-bold">Análisis Meteorológico</h2>
+              <Badge className={`${riskLevel.color} text-white`}>
+                Riesgo {riskLevel.label}
+              </Badge>
+            </div>
+            <div className="flex gap-2">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={exportToCSV}
+                className="bg-white/20 border-white/30"
+              >
+                <Download className="w-4 h-4 mr-2" />
+                CSV
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={exportToJSON}
+                className="bg-white/20 border-white/30"
+              >
+                <FileJson className="w-4 h-4 mr-2" />
+                JSON
+              </Button>
+            </div>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
@@ -98,17 +191,34 @@ export function WeatherDashboard({ location, eventType, date }: WeatherDashboard
         ))}
       </div>
 
+      <WeatherChart weatherConditions={weatherConditions} />
+
+      <Card className="p-6 backdrop-blur-sm bg-white/20 border-white/30">
+        <h3 className="text-lg font-semibold mb-4">Métricas Adicionales</h3>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {additionalMetrics.map((metric, index) => (
+            <Card key={index} className="p-4 bg-white/10 border-white/20 text-center">
+              <div className="text-2xl mb-2">{metric.icon}</div>
+              <div className="text-xs text-muted-foreground mb-1">{metric.name}</div>
+              <div className="font-semibold">{metric.value}</div>
+            </Card>
+          ))}
+        </div>
+      </Card>
+
       <Card className="p-6 backdrop-blur-sm bg-white/20 border-white/30">
         <div className="space-y-4">
           <h3 className="text-lg font-semibold flex items-center gap-2">
             <TrendingUp className="w-5 h-5" />
-            Recomendaciones para tu {eventType}
+            Recomendaciones Inteligentes para tu {eventType}
           </h3>
           <div className="space-y-2 text-sm text-muted-foreground">
-            <p>• Considera tener carpas o refugio disponible debido a la alta probabilidad de humedad</p>
-            <p>• Los vientos moderados pueden afectar decoraciones ligeras o sonido</p>
-            <p>• La temperatura será agradable para actividades al aire libre</p>
-            <p>• Asegúrate de tener hidratación disponible para los asistentes</p>
+            <p>• <strong>Refugio:</strong> Considera tener carpas o refugio disponible debido a la alta probabilidad de humedad (60%)</p>
+            <p>• <strong>Decoraciones:</strong> Los vientos moderados (25%) pueden afectar decoraciones ligeras o equipos de sonido</p>
+            <p>• <strong>Temperatura:</strong> La temperatura será agradable (18-28°C) para actividades al aire libre</p>
+            <p>• <strong>Hidratación:</strong> Asegúrate de tener agua disponible para los asistentes</p>
+            <p>• <strong>Protección Solar:</strong> Índice UV moderado - se recomienda protector solar</p>
+            <p>• <strong>Vestimenta:</strong> Ropa ligera y transpirable, con una chaqueta por si refresca</p>
           </div>
         </div>
       </Card>
