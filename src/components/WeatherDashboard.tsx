@@ -15,39 +15,74 @@ interface WeatherDashboardProps {
 export function WeatherDashboard({ location, eventType, date }: WeatherDashboardProps) {
   const { toast } = useToast();
   
-  // Simulated weather data with more variables
-  const weatherConditions = [
-    {
-      condition: "hot" as const,
-      probability: 15,
-      description: "Temperaturas superiores a 32°C",
-      temperature: "28°C"
-    },
-    {
-      condition: "cold" as const,
-      probability: 5,
-      description: "Temperaturas inferiores a 10°C",
-      temperature: "18°C"
-    },
-    {
-      condition: "windy" as const,
-      probability: 25,
-      description: "Vientos superiores a 30 km/h",
-      temperature: ""
-    },
-    {
-      condition: "humid" as const,
-      probability: 60,
-      description: "Humedad relativa superior al 80%",
-      temperature: ""
-    },
-    {
-      condition: "uncomfortable" as const,
-      probability: 30,
-      description: "Índice de calor elevado o sensación térmica incómoda",
-      temperature: ""
-    }
-  ];
+  // Función para generar datos meteorológicos dinámicos según ubicación, tipo de evento y fecha
+  const generateWeatherData = () => {
+    const selectedDate = new Date(date);
+    const month = selectedDate.getMonth();
+    const isWinter = month >= 5 && month <= 8; // Hemisferio sur
+    const isSummer = month >= 11 || month <= 2;
+    
+    // Factores basados en tipo de evento
+    const eventFactors: Record<string, { tempMod: number, windMod: number, humidMod: number }> = {
+      "Desfile": { tempMod: 0, windMod: 10, humidMod: 0 },
+      "Concierto": { tempMod: 5, windMod: 15, humidMod: 5 },
+      "Boda": { tempMod: 0, windMod: 5, humidMod: -5 },
+      "Festival": { tempMod: 5, windMod: 5, humidMod: 10 },
+      "Caminata": { tempMod: -5, windMod: 0, humidMod: -10 },
+      "Picnic": { tempMod: 0, windMod: 5, humidMod: 0 },
+      "Evento Deportivo": { tempMod: 0, windMod: 10, humidMod: 5 },
+    };
+    
+    const factor = eventFactors[eventType] || { tempMod: 0, windMod: 0, humidMod: 0 };
+    
+    // Temperatura base según estación
+    let baseTemp = isSummer ? 28 : isWinter ? 15 : 22;
+    let hotProb = isSummer ? 35 + factor.tempMod : isWinter ? 5 : 20 + factor.tempMod;
+    let coldProb = isWinter ? 25 : isSummer ? 3 : 10;
+    
+    // Viento según ubicación (simulado)
+    let windProb = location.toLowerCase().includes("costa") ? 45 + factor.windMod : 25 + factor.windMod;
+    
+    // Humedad según estación y ubicación
+    let humidProb = location.toLowerCase().includes("playa") || location.toLowerCase().includes("costa") 
+      ? 70 + factor.humidMod 
+      : isSummer ? 55 + factor.humidMod : 45 + factor.humidMod;
+    
+    return [
+      {
+        condition: "hot" as const,
+        probability: Math.min(Math.max(hotProb, 5), 95),
+        description: `Temperaturas superiores a ${baseTemp + 5}°C`,
+        temperature: `${baseTemp}°C`
+      },
+      {
+        condition: "cold" as const,
+        probability: Math.min(Math.max(coldProb, 5), 95),
+        description: `Temperaturas inferiores a ${baseTemp - 10}°C`,
+        temperature: `${baseTemp - 5}°C`
+      },
+      {
+        condition: "windy" as const,
+        probability: Math.min(Math.max(windProb, 10), 95),
+        description: "Vientos superiores a 30 km/h",
+        temperature: ""
+      },
+      {
+        condition: "humid" as const,
+        probability: Math.min(Math.max(humidProb, 15), 95),
+        description: "Humedad relativa superior al 80%",
+        temperature: ""
+      },
+      {
+        condition: "uncomfortable" as const,
+        probability: Math.min(Math.max((hotProb + humidProb) / 2, 10), 95),
+        description: "Índice de calor elevado o sensación térmica incómoda",
+        temperature: ""
+      }
+    ];
+  };
+
+  const weatherConditions = generateWeatherData();
 
   const additionalMetrics = [
     { name: "Índice UV", value: "Moderado (6)", icon: "☀️" },

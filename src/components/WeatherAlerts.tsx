@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Bell, AlertTriangle, Plus, X } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -23,6 +25,10 @@ export function WeatherAlerts() {
     { id: "2", condition: "Viento", threshold: 40, enabled: true, unit: "km/h" },
     { id: "3", condition: "Temperatura", threshold: 32, enabled: false, unit: "°C" },
   ]);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [newCondition, setNewCondition] = useState("");
+  const [newThreshold, setNewThreshold] = useState("");
+  const [newUnit, setNewUnit] = useState("");
 
   const toggleAlert = (id: string) => {
     setAlerts(prev => prev.map(alert => 
@@ -45,6 +51,36 @@ export function WeatherAlerts() {
     toast({
       title: "Alerta eliminada",
       description: "La alerta ha sido eliminada correctamente",
+    });
+  };
+
+  const addNewAlert = () => {
+    if (!newCondition || !newThreshold || !newUnit) {
+      toast({
+        title: "Error",
+        description: "Por favor completa todos los campos",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const newAlert: Alert = {
+      id: Date.now().toString(),
+      condition: newCondition,
+      threshold: Number(newThreshold),
+      enabled: true,
+      unit: newUnit,
+    };
+
+    setAlerts(prev => [...prev, newAlert]);
+    setIsDialogOpen(false);
+    setNewCondition("");
+    setNewThreshold("");
+    setNewUnit("");
+    
+    toast({
+      title: "Alerta agregada",
+      description: `Nueva alerta para ${newCondition} configurada correctamente`,
     });
   };
 
@@ -102,10 +138,71 @@ export function WeatherAlerts() {
           ))}
         </div>
 
-        <Button variant="outline" className="w-full bg-primary/10 border-primary/30 hover:bg-primary hover:text-primary-foreground shadow-md hover:shadow-[var(--shadow-glow)] transition-all duration-300">
-          <Plus className="w-4 h-4 mr-2" />
-          Agregar Nueva Alerta
-        </Button>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogTrigger asChild>
+            <Button variant="outline" className="w-full bg-primary/10 border-primary/30 hover:bg-primary hover:text-primary-foreground shadow-md hover:shadow-[var(--shadow-glow)] transition-all duration-300">
+              <Plus className="w-4 h-4 mr-2" />
+              Agregar Nueva Alerta
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Crear Nueva Alerta</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="condition">Condición Climática</Label>
+                <Select value={newCondition} onValueChange={setNewCondition}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecciona una condición" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Lluvia">Lluvia</SelectItem>
+                    <SelectItem value="Viento">Viento</SelectItem>
+                    <SelectItem value="Temperatura">Temperatura</SelectItem>
+                    <SelectItem value="Humedad">Humedad</SelectItem>
+                    <SelectItem value="Nieve">Nieve</SelectItem>
+                    <SelectItem value="Niebla">Niebla</SelectItem>
+                    <SelectItem value="Tormentas">Tormentas</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="threshold">Umbral de Alerta</Label>
+                <Input
+                  id="threshold"
+                  type="number"
+                  placeholder="Ej: 70"
+                  value={newThreshold}
+                  onChange={(e) => setNewThreshold(e.target.value)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="unit">Unidad</Label>
+                <Select value={newUnit} onValueChange={setNewUnit}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecciona una unidad" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="%">% (Porcentaje)</SelectItem>
+                    <SelectItem value="°C">°C (Temperatura)</SelectItem>
+                    <SelectItem value="km/h">km/h (Velocidad)</SelectItem>
+                    <SelectItem value="mm">mm (Precipitación)</SelectItem>
+                    <SelectItem value="hPa">hPa (Presión)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+                Cancelar
+              </Button>
+              <Button onClick={addNewAlert} className="bg-primary hover:bg-primary/90">
+                Crear Alerta
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </Card>
   );
