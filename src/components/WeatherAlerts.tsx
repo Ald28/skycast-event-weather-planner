@@ -49,7 +49,7 @@ export function WeatherAlerts() {
   };
 
   return (
-    <Card className="p-6 backdrop-blur-sm bg-white/20 border-white/30">
+    <Card className="p-6 backdrop-blur-md bg-card/60 border-primary/30 shadow-[var(--shadow-elegant)]">
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -64,7 +64,7 @@ export function WeatherAlerts() {
 
         <div className="space-y-3">
           {alerts.map((alert) => (
-            <Card key={alert.id} className="p-4 bg-white/10 border-white/20">
+            <Card key={alert.id} className="p-4 bg-card/40 border-primary/20 hover:border-primary/40 hover:shadow-md transition-all duration-300">
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
@@ -92,7 +92,7 @@ export function WeatherAlerts() {
                     type="number"
                     value={alert.threshold}
                     onChange={(e) => updateThreshold(alert.id, Number(e.target.value))}
-                    className="w-20 h-8 bg-white/30 border-white/30"
+                    className="w-20 h-8 bg-card/60 border-primary/30 focus:border-primary transition-all"
                     disabled={!alert.enabled}
                   />
                   <span className="text-sm text-muted-foreground">{alert.unit}</span>
@@ -102,7 +102,7 @@ export function WeatherAlerts() {
           ))}
         </div>
 
-        <Button variant="outline" className="w-full bg-white/20 border-white/30">
+        <Button variant="outline" className="w-full bg-primary/10 border-primary/30 hover:bg-primary hover:text-primary-foreground shadow-md hover:shadow-[var(--shadow-glow)] transition-all duration-300">
           <Plus className="w-4 h-4 mr-2" />
           Agregar Nueva Alerta
         </Button>

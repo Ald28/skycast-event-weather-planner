@@ -57,7 +57,7 @@ export function WeatherCard({ condition, probability, description, temperature, 
 
   return (
     <Card className={cn(
-      "relative overflow-hidden backdrop-blur-sm bg-white/20 border-white/30 transition-all duration-300 hover:scale-105 hover:shadow-lg",
+      "relative overflow-hidden backdrop-blur-md bg-card/60 border-primary/30 transition-all duration-300 hover:scale-105 hover:shadow-[var(--shadow-glow)] hover:border-primary/50 cursor-pointer",
       className
     )}>
       <div className={cn("absolute inset-0 opacity-10", config.bgClass)} />

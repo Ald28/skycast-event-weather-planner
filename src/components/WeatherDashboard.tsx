@@ -126,7 +126,7 @@ export function WeatherDashboard({ location, eventType, date }: WeatherDashboard
 
   return (
     <div className="space-y-6 animate-fade-in">
-      <Card className="p-6 backdrop-blur-sm bg-white/20 border-white/30">
+      <Card className="p-6 backdrop-blur-md bg-card/60 border-primary/30 shadow-[var(--shadow-elegant)]">
         <div className="space-y-4">
           <div className="flex items-center justify-between flex-wrap gap-3">
             <div className="flex items-center gap-3">
@@ -140,7 +140,7 @@ export function WeatherDashboard({ location, eventType, date }: WeatherDashboard
                 variant="outline" 
                 size="sm" 
                 onClick={exportToCSV}
-                className="bg-white/20 border-white/30"
+                className="bg-primary/10 border-primary/30 hover:bg-primary hover:text-primary-foreground shadow-md hover:shadow-[var(--shadow-glow)] transition-all duration-300"
               >
                 <Download className="w-4 h-4 mr-2" />
                 CSV
@@ -149,7 +149,7 @@ export function WeatherDashboard({ location, eventType, date }: WeatherDashboard
                 variant="outline" 
                 size="sm" 
                 onClick={exportToJSON}
-                className="bg-white/20 border-white/30"
+                className="bg-primary/10 border-primary/30 hover:bg-primary hover:text-primary-foreground shadow-md hover:shadow-[var(--shadow-glow)] transition-all duration-300"
               >
                 <FileJson className="w-4 h-4 mr-2" />
                 JSON
@@ -193,20 +193,22 @@ export function WeatherDashboard({ location, eventType, date }: WeatherDashboard
 
       <WeatherChart weatherConditions={weatherConditions} />
 
-      <Card className="p-6 backdrop-blur-sm bg-white/20 border-white/30">
+      <Card className="p-6 backdrop-blur-md bg-card/60 border-primary/30 shadow-[var(--shadow-elegant)]">
         <h3 className="text-lg font-semibold mb-4">Métricas Adicionales</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {additionalMetrics.map((metric, index) => (
-            <Card key={index} className="p-4 bg-white/10 border-white/20 text-center">
-              <div className="text-2xl mb-2">{metric.icon}</div>
-              <div className="text-xs text-muted-foreground mb-1">{metric.name}</div>
-              <div className="font-semibold">{metric.value}</div>
+            <Card key={index} className="p-4 bg-card/40 border-primary/20 hover:border-primary/40 hover:shadow-md transition-all duration-300 text-center cursor-pointer group">
+              <div className="group-hover:scale-110 transition-transform duration-300">
+                <div className="text-2xl mb-2">{metric.icon}</div>
+                <div className="text-xs text-muted-foreground mb-1">{metric.name}</div>
+                <div className="font-semibold">{metric.value}</div>
+              </div>
             </Card>
           ))}
         </div>
       </Card>
 
-      <Card className="p-6 backdrop-blur-sm bg-white/20 border-white/30">
+      <Card className="p-6 backdrop-blur-md bg-card/60 border-primary/30 shadow-[var(--shadow-elegant)]">
         <div className="space-y-4">
           <h3 className="text-lg font-semibold flex items-center gap-2">
             <TrendingUp className="w-5 h-5" />

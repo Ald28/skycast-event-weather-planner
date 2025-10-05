@@ -110,7 +110,7 @@ export function AIChat() {
   };
 
   return (
-    <Card className="h-full flex flex-col backdrop-blur-sm bg-white/20 border-white/30">
+    <Card className="h-full flex flex-col backdrop-blur-md bg-card/60 border-primary/30 shadow-[var(--shadow-elegant)]">
       <div className="p-4 border-b border-white/20">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-full bg-gradient-to-r from-primary to-accent flex items-center justify-center">

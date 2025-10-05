@@ -49,7 +49,7 @@ export function QueryHistory({ onLoadQuery }: QueryHistoryProps) {
   };
 
   return (
-    <Card className="p-6 backdrop-blur-sm bg-white/20 border-white/30">
+    <Card className="p-6 backdrop-blur-md bg-card/60 border-primary/30 shadow-[var(--shadow-elegant)]">
       <div className="flex items-center gap-2 mb-4">
         <History className="w-5 h-5 text-primary" />
         <h3 className="text-lg font-semibold">Historial de Consultas</h3>
@@ -63,7 +63,7 @@ export function QueryHistory({ onLoadQuery }: QueryHistoryProps) {
             </p>
           ) : (
             history.map((item) => (
-              <Card key={item.id} className="p-4 bg-white/10 border-white/20 hover:bg-white/20 transition-colors">
+              <Card key={item.id} className="p-4 bg-card/40 border-primary/20 hover:border-primary/40 hover:shadow-[var(--shadow-glow)] transition-all duration-300 cursor-pointer">
                 <div className="space-y-2">
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex-1 space-y-1">
@@ -96,7 +96,7 @@ export function QueryHistory({ onLoadQuery }: QueryHistoryProps) {
                         size="sm"
                         variant="outline"
                         onClick={() => onLoadQuery(item.location, item.eventType, item.date)}
-                        className="text-xs h-7 bg-white/20 border-white/30"
+                        className="text-xs h-7 bg-primary/10 border-primary/30 hover:bg-primary hover:text-primary-foreground transition-all duration-300"
                       >
                         Cargar
                       </Button>

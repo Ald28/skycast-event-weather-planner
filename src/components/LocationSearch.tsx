@@ -28,7 +28,7 @@ export function LocationSearch({ onSearch }: LocationSearchProps) {
   ];
 
   return (
-    <Card className="p-6 backdrop-blur-sm bg-white/20 border-white/30">
+    <Card className="p-6 backdrop-blur-md bg-card/60 border-primary/30 shadow-[var(--shadow-elegant)] hover:shadow-[var(--shadow-glow)] transition-shadow duration-300">
       <div className="space-y-4">
         <div className="text-center space-y-2">
           <h2 className="text-2xl font-bold">Planifica tu Evento</h2>
